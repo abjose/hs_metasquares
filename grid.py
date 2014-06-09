@@ -1,15 +1,16 @@
 #!/usr/bin/env python
-import pprint
+from utils import Point
 
 """
 Make a grid, maintain marks in it, print them out.
 Access row r and column c like: Grid[r][c]
 """
 
-class Grid:
+class Grid(object):
 
     def __init__(self, r, c, default=" "):
         assert(r > 0 and c > 0)
+        self.default = default
         self.grid = [[default for _ in range(c)] for _ in range(r)]
 
     def __str__(self, ):
@@ -34,16 +35,19 @@ class Grid:
         # one more row
         return output + make_border()
 
-    def display(self, ):
-        #pprint.pprint(self.grid)
-        print self
-
     def __getitem__(self, key):
         return self.grid[key]
 
+    def get_moves(self, ):
+        # return all moves (i.e. != default) on the board
+        return [(Point(r,c), self.grid[r][c]) 
+                for r,row in enumerate(self.grid)
+                for c,col in enumerate(row)
+                if self.grid[r][c] != self.default]
+
 if __name__=="__main__":
     G = Grid(3, 5)
-    G.display()
     G[2][2] = "X"
     G[1][0] = "0"
     print G
+    print G.get_moves()
