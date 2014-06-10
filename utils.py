@@ -49,7 +49,7 @@ def get_squares(grid, player_pt=None):
     # only do one player if necessary 
     if player_pt:
         player, pt = player_pt
-        plays = players[player]
+        plays = players.get(player, [])
         possibilities = [[pt]+list(l) for l in list(combinations(plays, 3))]
         # calculate squares
         for square in possibilities:
