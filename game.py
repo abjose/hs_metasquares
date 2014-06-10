@@ -1,7 +1,15 @@
 #!/usr/bin/env python
+
+"""
+ __  __ _____ _____  _    ____   ___  _   _   _    ____  _____ ____  
+|  \/  | ____|_   _|/ \  / ___| / _ \| | | | / \  |  _ \| ____/ ___| 
+| |\/| |  _|   | | / _ \ \___ \| | | | | | |/ _ \ | |_) |  _| \___ \ 
+| |  | | |___  | |/ ___ \ ___) | |_| | |_| / ___ \|  _ <| |___ ___) |
+|_|  |_|_____| |_/_/   \_\____/ \__\_\\___/_/   \_\_| \_\_____|____/ 
+"""
+
 from grid import Grid
-from utils import Point, check_square
-from itertools import combinations
+from utils import Point, check_square, get_squares
 import pprint
 
 """
@@ -11,7 +19,6 @@ TODO:
 - allow players - ask how many players, use random characters, give
   scores at the end
 - make AI? need to think about how best to interface with...
-
 """
 
 class Metasquares(object):
@@ -21,22 +28,6 @@ class Metasquares(object):
         # should precompute squares on init? or look for file and precompute 
         # if one isn't found
 
-    def get_squares(self, ):
-        # Return every found square in the grid
-        # might be faster to pre-compute, but...ehhh.
-        moves = self.board.get_moves()
-        # split into different players
-        players = dict()
-        for pt, player in moves:
-            players[player] = players.get(player, []) + [pt]
-        # for each, get every combination of 4
-        squares = dict()
-        for player, plays in players.items():
-            possibilities = list(combinations(plays, 4))
-            for square in possibilities:
-                if check_square(square):
-                    squares[player] = squares.get(player, []) + [square]
-        return squares
 
 if __name__=="__main__":
     # do some get_squares tests
@@ -74,5 +65,5 @@ if __name__=="__main__":
     """
 
     print m.board
-    pprint.pprint(m.get_squares())
+    pprint.pprint(get_squares(m.board))
 

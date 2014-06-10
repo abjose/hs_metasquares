@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from itertools import combinations
 
 class Point(object):
     def __init__(self, x, y):
@@ -35,3 +36,21 @@ def check_square(P):
        p2.dist(p3) == p2.dist(p4) and p4.dist(p1) == p4.dist(p2):
         return True
     return False
+
+
+def get_squares(grid):
+    # Return every found square in a grid
+    # might be faster to pre-compute, but...ehhh.
+    moves = grid.get_moves()
+    # split into different players
+    players = dict()
+    for pt, player in moves:
+        players[player] = players.get(player, []) + [pt]
+    # for each, get every combination of 4
+    squares = dict()
+    for player, plays in players.items():
+        possibilities = list(combinations(plays, 4))
+        for square in possibilities:
+            if check_square(square):
+                squares[player] = squares.get(player, []) + [square]
+    return squares
