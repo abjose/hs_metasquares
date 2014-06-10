@@ -14,10 +14,6 @@ import pprint
 
 """
 TODO:
-- get score from area (just area of bounding box)
------wait, really? that seems dumb
-- allow players - ask how many players, use random characters, give
-  scores at the end
 - make AI? need to think about how best to interface with...
 """
 
@@ -28,7 +24,7 @@ class Metasquares(object):
         # should precompute squares on init? or look for file and precompute 
         # if one isn't found
 
-    def run_game(self, num_players=2, score_limit=150):
+    def run_game(self, num_players=2, score_limit=15):
         # run a game between num+players players
         assert(num_players > 0)
         players = dict([(str(r+1),0) for r in range(num_players)])
@@ -36,18 +32,16 @@ class Metasquares(object):
         print "Starting a game between", num_players, "players"
         print "Enter moves as a row and column separated by a space, i.e.: R C"
         raw_input("Ready?")
-        while all([score<150 for score in players.values()]):
+        while all([score<score_limit for score in players.values()]):
             p = players.keys()[player_index]
             player_index = (player_index+1)%num_players
             good_choice = False
             print self.board
             while not good_choice:
                 choice = raw_input("Player "+p+", place a piece: ").strip()
-                r, c = 0, 0
-                try:
-                    r, c = map(int, choice.split(" "))
+                try: r, c = map(int, choice.split(" "))
                 except Exception:
-                    print "Please format as R C"
+                    print "Please format as two integers: R C"
                     continue
                 if 0 <= r < len(self.board) and 0 <= c < len(self.board[0]):
                     if self.board[r][c] == self.board.default:
@@ -59,7 +53,8 @@ class Metasquares(object):
                         good_choice = True
                     else: print "That square is occupied."
                 else: print "Choice out of range."
-
+        print "Final scores:"
+        pprint.pprint(players)
 
 if __name__=="__main__":
     # do some get_squares tests
