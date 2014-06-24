@@ -9,8 +9,6 @@ Access row r and column c like: Grid[r][c]
 """
 TODO:
 - consider changing this to use a dictionary instead of a list of lists?
-- implement __repr__ for sending over network?
-  also need to allow to be constructed from this description
 """
 
 class Grid(object):
