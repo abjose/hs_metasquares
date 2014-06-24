@@ -24,7 +24,7 @@ class Grid(object):
             self.init_grid(r, c)            
 
     def init_grid(self, r, c):
-        self.grid = [[self, default for _ in range(c)] for _ in range(r)]
+        self.grid = [[self.default for _ in range(c)] for _ in range(r)]
 
     def __str__(self, ):
         sq_width = 3
@@ -68,7 +68,8 @@ class Grid(object):
         for r in range(len(self.grid)):
             for c in range(len(self.grid[0])):
                 if self.grid[r][c] != self.default:
-                    out += str(r) + ' ' + str(c) + str(self.grid[r][c]) + '\n'
+                    mark = str(self.grid[r][c])
+                    out += str(r) + ' ' + str(c) + ' ' + mark + '\n'
         return out
 
     def load_repr(self, load):
@@ -92,6 +93,9 @@ class Grid(object):
 if __name__=="__main__":
     G = Grid(3, 5)
     G[2][2] = "X"
-    G[1][0] = "0"
+    G[1][0] = "O"
     print G
     print G.get_moves()
+    print repr(G)
+    G2 = Grid(load=repr(G))
+    print G2
