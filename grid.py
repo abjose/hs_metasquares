@@ -34,7 +34,7 @@ class Grid(object):
         make_border = lambda: "  " + "".join(["+"+"-"*sq_width 
                                        for _ in range(len(self.grid[0]))])+"+\n"
         # print out numbering on top row
-        print "    " + (" "*sq_width).join(map(str, range(len(self.grid))))
+        print "    " + (" "*sq_width).join(map(str, range(len(self.grid[0]))))
 
         output = ""
         for row in range(len(self.grid)):
