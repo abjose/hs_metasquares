@@ -15,10 +15,16 @@ TODO:
 
 class Grid(object):
 
-    def __init__(self, r, c, default=" "):
+    def __init__(self, r=10, c=10, default=" ", load=None):
         assert(r > 0 and c > 0)
         self.default = default
-        self.grid = [[default for _ in range(c)] for _ in range(r)]
+        if load:
+            self.load_repr(load)
+        else:
+            self.init_grid(r, c)            
+
+    def init_grid(self, r, c):
+        self.grid = [[self, default for _ in range(c)] for _ in range(r)]
 
     def __str__(self, ):
         sq_width = 3
@@ -65,6 +71,17 @@ class Grid(object):
                     out += str(r) + ' ' + str(c) + str(self.grid[r][c]) + '\n'
         return out
 
+    def load_repr(self, load):
+        # load in output of __repr__ function
+        # grab grid size
+        load = load.strip().split('\n')
+        self.init_grid(int(load[0]), int(load[1]))
+        # load in sparse points
+        for line in load[2:]:
+            line = line.strip().split()
+            row, col, mark = int(line[0]), int(line[1]), line[2]
+            self.grid[row][col] = mark
+        
     def get_moves(self, ):
         # return all moves (i.e. != default) on the board
         return [(Point(r,c), self.grid[r][c]) 
