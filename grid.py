@@ -8,6 +8,9 @@ Access row r and column c like: Grid[r][c]
 
 """
 TODO:
+- consider changing this to use a dictionary instead of a list of lists?
+- implement __repr__ for sending over network?
+  also need to allow to be constructed from this description
 """
 
 class Grid(object):
@@ -50,6 +53,17 @@ class Grid(object):
     
     def __len__(self):
         return len(self.grid)
+
+    def __repr__(self):
+        # Return 'sparse' version of the grid
+        # start off with just rows columns
+        out = str(len(self.grid)) + "\n" + str(len(self.grid[0])) + "\n"
+        # then list all occupied cells
+        for r in range(len(self.grid)):
+            for c in range(len(self.grid[0])):
+                if self.grid[r][c] != self.default:
+                    out += str(r) + ' ' + str(c) + str(self.grid[r][c]) + '\n'
+        return out
 
     def get_moves(self, ):
         # return all moves (i.e. != default) on the board
