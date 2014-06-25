@@ -1,29 +1,86 @@
 #!/usr/bin/env python
 
+"""
+Event-driven version of the game.
+"""
+
 from grid import Grid
 from utils import Point, check_square, get_squares, get_square_score, get_scores
 import pprint
 
+
 """
 TODO:
-- make AI? need to think about how best to interface with...
+- Just get rid of loop-y version? Or at least rewrite with these functions...
+  Then switch this to just 'game' and switch that to game_loop or something
+- Sure it's a good idea to return error messages?'
 """
 
-class Metasquares(object):
+class Game(object):
 
-    def __init__(self, r, c):
+    def __init__(self, r, c, num_players, score_limit):
+        # the board itself
         self.board = Grid(r, c)
+        # game size and score limit
+        self.num_players = num_players
+        self.score_limit = score_limit
+        # map from player names (i.e. 'pieces') to scores
+        self.players = {}
+        # keep track of current player
+        self.player_index = 0
         # should precompute squares on init? or look for file and precompute 
         # if one isn't found
 
+    def is_game_started(self):
+        # should game start?
+        return len(self.players) == self.num_players
+        
+    def is_game_over(self):
+        # check if the game should end
+        win = any([s >= self.score_limit for s in self.players.values()])
+        no_moves = all([self.board[r][c] != self.board.default
+                        for r in range(len(self.board))
+                        for c in range(len(self.board[0]))])
+        return not (win or no_moves)
+
+    def score_printout(self):
+        return "\n".join([p+": "+str(s)+ for p,s in self.players.items()])
+        
+    def move(self, r, c, player_name):
+        # attempt to make a move
+        if not (0 <= r < len(self.board) and 0 <= c < len(self.board[0])):
+            return False, "Move not made - out of range."
+        if self.board[r][c] != self.board.default:
+            return False, "Move not made - that space is occupied."
+        # otherwise, make move
+        self.board[r][c] = player_name
+        # and update scores
+        squares = get_squares(self.board, (player_name, Point(r,c)))
+        scores = get_scores(squares)
+        players[player_name] += scores.get(player_name, 0)
+        return True, "Move successful."
+
+    def add_player(self, player_name):
+        player_name = str(player_name)
+        if player_name == self.board.default or player_name in self.players:
+            return False, 'Please choose another name.'
+        if len(self.players) == self.num_players:
+            return False, 'This game is full.'
+        self.players[player_name] = 0
+        return True, 'Player added successfully'
+
+    def advance_turn(self):
+        self.player_index = (self.player_index+1) % self.num_players
+        
     def run_game(self, num_players=2, score_limit=15):
-        # run a game between num+players players
+        # run a game between num_players players
         assert(num_players > 0)
         players = dict([(str(r+1),0) for r in range(num_players)])
         player_index = 0
         print "Starting a game between", num_players, "players"
         print "Enter moves as a row and column separated by a space, i.e.: R C"
         raw_input("Ready?")
+        # should add a check to see if there are no moves left
         while all([score<score_limit for score in players.values()]):
             p = players.keys()[player_index]
             player_index = (player_index+1)%num_players
@@ -38,7 +95,7 @@ class Metasquares(object):
                 if 0 <= r < len(self.board) and 0 <= c < len(self.board[0]):
                     if self.board[r][c] == self.board.default:
                         self.board[r][c] = p
-                        squares = get_squares(m.board, (p, Point(r,c)))
+                        squares = get_squares(self.board, (p, Point(r,c)))
                         score = get_scores(squares)
                         players[p] += score.get(p, 0)
                         print "Player",p,"score:",players[p]
@@ -47,10 +104,10 @@ class Metasquares(object):
                 else: print "Choice out of range."
         print "Final scores:"
         pprint.pprint(players)
-
+        
 if __name__=="__main__":
     # do some get_squares tests
-    m = Metasquares(10, 10)
+    m = Game(10, 10)
     """
     P = [Point(0,0), Point(0,1), Point(1,0), Point(1,1)]
     print check_square(P)
@@ -58,8 +115,7 @@ if __name__=="__main__":
     print check_square(P)
     P = [Point(0,0), Point(0,2), Point(2,0), Point(2,2)]
     print check_square(P)
-    P = [Point(1,0), Point(0,1), Point(2,1), Point(1,2)]
-    print check_square(P)
+    P = [Point(1,0), Point(0,1), Point(2,1), Point(1,2)] check_square(P)
     """
 
     """
@@ -67,22 +123,12 @@ if __name__=="__main__":
     # try out filling lots of things
     for _ in range(30):
         m.board[random.randint(0,9)][random.randint(0,9)] = 'x'
-
-
+        m.board[random.randint(0,9)][random.randint(0,9)] = 'o'
     print m.board
     squares = get_squares(m.board)
     pprint.pprint(squares)
     scores = get_scores(squares)
     pprint.pprint(scores)
-
-    for _ in range(20):
-        p = Point(random.randint(0,9), random.randint(0,9))
-        m.board[p.r][p.c] = 'o'
-        print m.board
-        squares = get_squares(m.board, ('o', p))
-        pprint.pprint(squares)
-        scores = get_scores(squares)
-        pprint.pprint(scores)
     """
-
     m.run_game()
+
