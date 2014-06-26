@@ -71,40 +71,7 @@ class Game(object):
 
     def advance_turn(self):
         self.player_index = (self.player_index+1) % self.num_players
-        
-    def run_game(self, num_players=2, score_limit=15):
-        # run a game between num_players players
-        assert(num_players > 0)
-        players = dict([(str(r+1),0) for r in range(num_players)])
-        player_index = 0
-        print "Starting a game between", num_players, "players"
-        print "Enter moves as a row and column separated by a space, i.e.: R C"
-        raw_input("Ready?")
-        # should add a check to see if there are no moves left
-        while all([score<score_limit for score in players.values()]):
-            p = players.keys()[player_index]
-            player_index = (player_index+1)%num_players
-            good_choice = False
-            print self.board
-            while not good_choice:
-                choice = raw_input("Player "+p+", place a piece: ").strip()
-                try: r, c = map(int, choice.split(" "))
-                except Exception:
-                    print "Please format as two integers: R C"
-                    continue
-                if 0 <= r < len(self.board) and 0 <= c < len(self.board[0]):
-                    if self.board[r][c] == self.board.default:
-                        self.board[r][c] = p
-                        squares = get_squares(self.board, (p, Point(r,c)))
-                        score = get_scores(squares)
-                        players[p] += score.get(p, 0)
-                        print "Player",p,"score:",players[p]
-                        good_choice = True
-                    else: print "That square is occupied."
-                else: print "Choice out of range."
-        print "Final scores:"
-        pprint.pprint(players)
-        
+                
 if __name__=="__main__":
     # do some get_squares tests
     m = Game(10, 10)
