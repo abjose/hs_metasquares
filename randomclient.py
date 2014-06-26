@@ -27,7 +27,7 @@ class EchoClient(protocol.Protocol):
         self.transport.write(init_string)
     
     def dataReceived(self, data):
-        print "Server said:\n", data
+        #print "Server said:\n", data
         if data.strip().split('\n')[0] == 'board':
             # get the board - not that you do anything with it...
             # BUT SHOULD TO TEST!!! (at least print the board out)
@@ -46,17 +46,17 @@ class EchoFactory(protocol.ClientFactory):
 
     def clientConnectionFailed(self, connector, reason):
         print "Connection failed - goodbye!"
-        reactor.stop()
+        #reactor.stop()
     
     def clientConnectionLost(self, connector, reason):
         print "Connection lost - goodbye!"
-        reactor.stop()
+        #reactor.stop()
 
 
 # this connects the protocol to a server running on port 8000
 def main():
     f = EchoFactory()
-    for i in range(4):
+    for i in range(400):
         reactor.connectTCP("localhost", 8000, f)
     reactor.run()
 
