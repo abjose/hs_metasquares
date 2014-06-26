@@ -26,6 +26,8 @@ class GameMaster(object):
     def add_player(self, game_name, player_name):
         if game_name not in self.games:
             return False,  "Player not added - that game doesn't exist."
+        if player_name in [player for game in self.games.values() for player in game.players]:
+            return False, "Player not added - that name already exists on the server."
         return self.games[game_name].add_player(player_name)
             
     def move(self, game_name, r, c, player_name):
