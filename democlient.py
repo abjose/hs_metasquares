@@ -11,8 +11,7 @@ from twisted.internet import reactor, protocol
 
 # a client protocol
 
-class EchoClient(protocol.Protocol):
-    """Once connected, send a message, then print the result."""
+class Client(protocol.Protocol):
     
     def connectionMade(self):
         print 'client connected'
@@ -27,8 +26,8 @@ class EchoClient(protocol.Protocol):
     def connectionLost(self, reason):
         print "connection lost"
 
-class EchoFactory(protocol.ClientFactory):
-    protocol = EchoClient
+class Factory(protocol.ClientFactory):
+    protocol = Client
 
     def clientConnectionFailed(self, connector, reason):
         print "Connection failed - goodbye!"
@@ -41,7 +40,7 @@ class EchoFactory(protocol.ClientFactory):
 
 # this connects the protocol to a server running on port 8000
 def main():
-    f = EchoFactory()
+    f = Factory()
     reactor.connectTCP("localhost", 8000, f)
     reactor.run()
 
