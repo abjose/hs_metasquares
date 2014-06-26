@@ -39,6 +39,7 @@ class GameMaster(object):
                 self.games[game_name].advance_turn()
             else:
                 msg += "\nGame Over!\n" + self.games[game_name].score_printout()
+                del self.games[game_name]
         return success, msg
             
 if __name__=='__main__':
