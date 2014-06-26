@@ -74,6 +74,9 @@ class Grid(object):
         # load in output of __repr__ function
         # grab grid size
         load = load.strip().split('\n')
+        #print load
+        if load[0] == 'board':
+            load = load[1:]
         self.init_grid(int(load[0]), int(load[1]))
         # load in sparse points
         for line in load[2:]:

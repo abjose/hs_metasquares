@@ -45,11 +45,12 @@ class Echo(protocol.Protocol):
                    'move'  : self.handle_move,}
         data = data.strip().split()
         if data[0] in handler:
-            print data
+            #print data
             handler[data[0]](data)
         else:
             # probably got incorrectly formatted input
-            self.transport.write('Bad data format!')
+            #self.transport.write('Bad data format!')
+            pass
 
     def send_board(self, game):
         player = self.factory.GM.get_next_player(game)
@@ -61,11 +62,11 @@ class Echo(protocol.Protocol):
             _, r, c = data
         except Exception:
             print 'Got poorly formatted move...'
-            self.transport.write("Move is badly formatted!")
+            #self.transport.write("Move is badly formatted!")
         else:
             if self not in self.factory.p2c.values():
                 print "Not in a game!"
-                self.transport.write("Initialize a game before moving!")
+                #self.transport.write("Initialize a game before moving!")
             else:
                 player, game = {v:k for k,v in self.factory.p2c.items()}[self]
                 success, msg = self.factory.GM.move(game, int(r),int(c), player)
@@ -80,13 +81,17 @@ class Echo(protocol.Protocol):
                 
     def handle_game_over(self, game):
         # find all players in the game, make them DC
+        print "Game'",game,"'has ended.\nScores:"
+        print self.factory.GM.games[game].score_printout()
         players = [p for p,g in self.factory.p2c if g == game]
         clients = [self.factory.p2c[(p,g)]
                    for p,g in self.factory.p2c if g == game]
         for player in players:
             client = self.factory.p2c[(player,game)]
             client.transport.write('Game Over!')
-            del self.factory.p2c[(player,game)]
+            #del self.factory.p2c[(player,game)]
+        # remove from game master
+        self.factory.GM.remove_game(game)
                         
     def handle_game_list(self, data):
         waiting_games = [g for g in self.factory.GM.games
@@ -98,11 +103,11 @@ class Echo(protocol.Protocol):
             p_name, game_name, r, c, num_players, score_limit = data[1:]
         except Exception:
             print 'User passed in bad data: ' + data
-            self.transport.write('Bad init data format!')
+            #self.transport.write('Bad init data format!')
         else:
             if self in self.factory.p2c.values():
                 print 'Client seems to be re-initing.'
-                self.transport.write('Already in a game!')
+                #self.transport.write('Already in a game!')
             else:
                 # try to add game and player
                 self.factory.GM.add_game(game_name, int(r), int(c),
@@ -112,9 +117,9 @@ class Echo(protocol.Protocol):
                     self.factory.p2c[(p_name, game_name)] = self
                     # see if game should start
                     if self.factory.GM.games[game_name].is_game_started():
-                    # must be last player if game just started, so send board
+                        # must be last player if game just started, so send board
                         self.send_board(game_name)
-                self.transport.write(msg)
+                #self.transport.write(msg)
 
 def main():
     """This runs the protocol on port 8000"""

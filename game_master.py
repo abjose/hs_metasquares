@@ -15,8 +15,8 @@ class GameMaster(object):
 
     def add_game(self, game_name, r, c, num_players, score_limit):
         # would prefer to put these checks into Game itself...
-        if num_players <= 0:
-            return False, "Game not made - num_players should be >= 1."
+        if num_players <= 1:
+            return False, "Game not made - num_players should be >= 2."
         if score_limit <= 0:
             return False, "Game not made - score_limit should be >= 1."
         if game_name in self.games:
@@ -44,10 +44,13 @@ class GameMaster(object):
                 self.games[game_name].advance_turn()
             else:
                 #msg += "\nGame Over!\n"+self.games[game_name].score_printout()
-                msg = "Game Over!\n" + self.games[game_name].score_printout()
+                msg = "Game Over!"#"\n" + self.games[game_name].score_printout()
                 success = False
-                del self.games[game_name]
+                #del self.games[game_name]
         return success, msg
+
+    def remove_game(self, game):
+        del self.games[game]
             
 if __name__=='__main__':
     GM = GameMaster()

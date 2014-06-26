@@ -3,6 +3,7 @@
 # a random player, for testing the server
 
 import random
+from grid import Grid
 
 """
 TODO:
@@ -13,12 +14,14 @@ class RandomPlayer(object):
 
     def __init__(self):
         # come up with random stuff for making a game
-        names = map(str, range(2))
+        names = map(str, range(10))
+        self.board = None
         self.name = random.choice(names)
         self.game = 'game'+random.choice(names)
-        self.rows, self.cols = random.randint(-1,10), random.randint(-1,10)
-        #self.num_players = random.randint(-1,10)
-        self.num_players = 2
+        #self.rows, self.cols = random.randint(-1,10), random.randint(-1,10)
+        self.rows, self.cols = 10, 10
+        self.num_players = random.randint(-1,10)
+        #self.num_players = 2
         self.max_score = random.randint(-1,200)
 
     def get_init_string(self):
@@ -33,8 +36,12 @@ class RandomPlayer(object):
         # format: 'move' row column
         print self.name, self.game, 'MOVING!'
         moves = [random.randint(-1,10), random.randint(-1,10)]
+        move = 'move ' +  ' '.join(map(str, moves))
+        print move
         return 'move ' +  ' '.join(map(str, moves))
 
     def receive_board(self, board):
         # this should go in base class
-        print 'LENGTH OF BOARD DATA:', len(board.strip().split('\n'))
+        #print 'LENGTH OF BOARD DATA:', len(board.strip().split('\n'))
+        self.board = Grid(load=board)
+        print self.board
