@@ -39,12 +39,17 @@ class Game(object):
         no_moves = all([self.board[r][c] != self.board.default
                         for r in range(len(self.board))
                         for c in range(len(self.board[0]))])
-        return not (win or no_moves)
+        return win or no_moves
 
     def score_printout(self):
         return "\n".join([p+": "+str(s) for p,s in self.players.items()])
         
     def move(self, r, c, player_name):
+        # check we should make move
+        if not self.is_game_started():
+            return False, "Move not made - game not yet started."
+        if player_name not in self.players:
+            return False, "Move not made - player not part of this game."
         # attempt to make a move
         if not (0 <= r < len(self.board) and 0 <= c < len(self.board[0])):
             return False, "Move not made - out of range."
@@ -55,7 +60,7 @@ class Game(object):
         # and update scores
         squares = get_squares(self.board, (player_name, Point(r,c)))
         scores = get_scores(squares)
-        players[player_name] += scores.get(player_name, 0)
+        self.players[player_name] += scores.get(player_name, 0)
         return True, "Move successful."
 
     def add_player(self, player_name):
