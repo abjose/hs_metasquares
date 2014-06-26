@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-from events_game import Game
+from game import Game
 
 """
 Handle multiple games and players
 Figure out where to send player commands
 """
 
-class MultiGame(object):
+class GameMaster(object):
 
     def __init__(self):
         self.games = {}
@@ -15,13 +15,13 @@ class MultiGame(object):
     def add_game(self, game_name, r, c, num_players, score_limit):
         # would prefer to put these checks into Game itself...
         if num_players <= 0:
-            return False, "Game not made - num players should be >= 1."
+            return False, "Game not made - num_players should be >= 1."
         if score_limit <= 0:
-            return False, "Game not made - score limit should be >= 1."
+            return False, "Game not made - score_limit should be >= 1."
         if game_name in self.games:
             return False, "Game not made - there is already a game with that name."
         self.games[str(game_name)] = Game(r, c, num_players, score_limit)
-        return True, "Game ''" + str(name) + "'' successfully created."
+        return True, "Game '" + str(game_name) + "' successfully created."
 
     def add_player(self, game_name, player_name):
         if game_name not in self.games:
@@ -39,3 +39,13 @@ class MultiGame(object):
                 msg += "\nGame Over!\n" + self.games[game_name].score_printout()
         return success, msg
             
+if __name__=='__main__':
+    GM = GameMaster()
+    print GM.add_game('test1', 10, 10, 2, 150)
+    print GM.add_game('test2', 10, 10, 2, 150)
+    print GM.add_game('test3', 10, 10, 2, 150)
+    print GM.add_player('test1', 'x')
+    print GM.add_player('test1', 'x')
+    print GM.add_player('test1', ' ')
+    print GM.add_player('test1', 'y')
+    print GM.add_player('test1', 'z')
