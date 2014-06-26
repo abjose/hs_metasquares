@@ -15,15 +15,14 @@ class EchoClient(protocol.Protocol):
     """Once connected, send a message, then print the result."""
     
     def connectionMade(self):
-        print 'client connected (clientside)'
-        name = "x test1 10 10 2 150"
-        #self.transport.write("hello, world!")
-        self.transport.write(name)
+        print 'client connected'
+        test = "init x test1 10 10 2 150"
+        self.transport.write(test)
     
     def dataReceived(self, data):
         "As soon as any data is received, write it back."
         print "Server said:", data
-        self.transport.loseConnection()
+        #self.transport.loseConnection()
     
     def connectionLost(self, reason):
         print "connection lost"
@@ -40,7 +39,7 @@ class EchoFactory(protocol.ClientFactory):
         reactor.stop()
 
 
-# this connects the protocol to a server runing on port 8000
+# this connects the protocol to a server running on port 8000
 def main():
     f = EchoFactory()
     reactor.connectTCP("localhost", 8000, f)

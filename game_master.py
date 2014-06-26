@@ -21,6 +21,8 @@ class GameMaster(object):
             return False, "Game not made - score_limit should be >= 1."
         if game_name in self.games:
             return False, "Game not made - there is already a game with that name."
+        if not (r > 0 and c > 0):
+            return False, "Game not made - the board size is invalid."
         self.games[str(game_name)] = Game(r, c, num_players, score_limit)
         return True, "Game '" + str(game_name) + "' successfully created."
 
@@ -41,7 +43,9 @@ class GameMaster(object):
             if not self.games[game_name].is_game_over():
                 self.games[game_name].advance_turn()
             else:
-                msg += "\nGame Over!\n" + self.games[game_name].score_printout()
+                #msg += "\nGame Over!\n"+self.games[game_name].score_printout()
+                msg = "Game Over!\n" + self.games[game_name].score_printout()
+                success = False
                 del self.games[game_name]
         return success, msg
             

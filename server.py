@@ -9,6 +9,9 @@ TODO:
 - handle messages better if prepending them with stuff, can just send lots!
   like every one that occurs
   or at least print them out server-side
+- make something to simulate usage? Like spawn lots of clients, get them
+  to try to connect and play...
+- MAKE HANDLE PLAYERS DISCONNECTING BETTER - LIKE SHOULD FREE UP NAME, ETC.
 
 Accepted patterns:
 'init' player_name game_name rows cols num_players score_limit (make/enter game)
@@ -32,23 +35,25 @@ class Echo(protocol.Protocol):
 
     def connectionLost(self, reason):
         print "Lost a client!"
+        # TODO: deal with removing game stuff, ending games, etc.
         self.factory.clients.remove(self)
     
     def dataReceived(self, data):
         # try to handle data
-        handler = {'init'  : self.handle_data,
+        handler = {'init'  : self.handle_init,
                    'games' : self.handle_game_list,
                    'move'  : self.handle_move,}
         data = data.strip().split()
-        try:
+        if data[0] in handler:
+            print data
             handler[data[0]](data)
-        except Exception:
+        else:
             # probably got incorrectly formatted input
             self.transport.write('Bad data format!')
 
     def send_board(self, game):
         player = self.factory.GM.get_next_player(game)
-        board_state = repr(self.factory.games[game].board)
+        board_state = repr(self.factory.GM.games[game].board)
         self.factory.p2c[(player,game)].transport.write('board\n'+board_state)
 
     def handle_move(self, data):
@@ -64,11 +69,25 @@ class Echo(protocol.Protocol):
             else:
                 player, game = {v:k for k,v in self.factory.p2c.items()}[self]
                 success, msg = self.factory.GM.move(game, int(r),int(c), player)
-                # send board state to next player
-                # this seems like a hack
-                # but better than giving gamemaster an instance of factory?
-                self.send_board(game)
-
+                if 'Game Over!' in msg:
+                    # TODO: wow, so hacky
+                    self.handle_game_over(game)
+                else:
+                    # send board state to next player
+                    # this seems like a hack
+                    # but better than giving gamemaster an instance of factory?
+                    self.send_board(game)
+                
+    def handle_game_over(self, game):
+        # find all players in the game, make them DC
+        players = [p for p,g in self.factory.p2c if g == game]
+        clients = [self.factory.p2c[(p,g)]
+                   for p,g in self.factory.p2c if g == game]
+        for player in players:
+            client = self.factory.p2c[(player,game)]
+            client.transport.write('Game Over!')
+            del self.factory.p2c[(player,game)]
+                        
     def handle_game_list(self, data):
         waiting_games = [g for g in self.factory.GM.games
                           if not self.factory.GM.games[g].is_game_started()]
@@ -79,19 +98,23 @@ class Echo(protocol.Protocol):
             p_name, game_name, r, c, num_players, score_limit = data[1:]
         except Exception:
             print 'User passed in bad data: ' + data
-            self.transport.write('Bad data format!')
+            self.transport.write('Bad init data format!')
         else:
-            # try to add game and player
-            self.factory.GM.add_game(game_name, int(r), int(c),
-                                     int(num_players), int(score_limit))
-            success, msg = self.factory.GM.add_player(p_name, game_name)
-            if success:
-                self.factory.p2c[(p_name, game_name)] = self
-                # see if game should start
-                if self.factory.GM.games[game_name].is_started():
+            if self in self.factory.p2c.values():
+                print 'Client seems to be re-initing.'
+                self.transport.write('Already in a game!')
+            else:
+                # try to add game and player
+                self.factory.GM.add_game(game_name, int(r), int(c),
+                                         int(num_players), int(score_limit))
+                success, msg = self.factory.GM.add_player(p_name, game_name)
+                if success:
+                    self.factory.p2c[(p_name, game_name)] = self
+                    # see if game should start
+                    if self.factory.GM.games[game_name].is_game_started():
                     # must be last player if game just started, so send board
-                    self.send_board(game_name)
-            self.transport.write(msg)
+                        self.send_board(game_name)
+                self.transport.write(msg)
 
 def main():
     """This runs the protocol on port 8000"""
