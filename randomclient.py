@@ -29,8 +29,7 @@ class EchoClient(protocol.Protocol):
     def dataReceived(self, data):
         #print "Server said:\n", data
         if data.strip().split('\n')[0] == 'board':
-            # get the board - not that you do anything with it...
-            # BUT SHOULD TO TEST!!! (at least print the board out)
+            # get the board
             self.player.receive_board(data)
             # make a move
             self.transport.write(self.player.move())

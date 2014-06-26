@@ -22,4 +22,3 @@ class RandomPlayer(Player):
         # override Player's move with random movement
         moves = [random.randint(0,10), random.randint(0,10)]
         return 'move ' +  ' '.join(map(str, moves))
-

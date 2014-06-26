@@ -81,7 +81,7 @@ class Echo(protocol.Protocol):
                 
     def handle_game_over(self, game):
         # find all players in the game, make them DC
-        print "Game'",game,"'has ended.\nScores:"
+        print "Game",game,"has ended.\nScores:"
         print self.factory.GM.games[game].score_printout()
         players = [p for p,g in self.factory.p2c if g == game]
         clients = [self.factory.p2c[(p,g)]
