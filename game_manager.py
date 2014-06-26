@@ -19,13 +19,18 @@ class MultiGame(object):
         if score_limit <= 0:
             return False, "Game not made - score limit should be >= 1."
         if game_name in self.games:
-            return False, "There is already a game with the name " + game_name
+            return False, "Game not made - there is already a game with that name."
         self.games[str(game_name)] = Game(r, c, num_players, score_limit)
         return True, "Game ''" + str(name) + "'' successfully created."
 
+    def add_player(self, game_name, player_name):
+        if game_name not in self.games:
+            return False,  "Player not added - that game doesn't exist."
+        return self.games[game_name].add_player(player_name)
+            
     def move(self, game_name, r, c, player_name):
         if game_name not in self.games:
-            return False, "Game '" + game_name + "' doesn't exist."
+            return False, "Move not made - that game doesn't exist."
         success, msg = self.games[game_name].move(r, c, player_name)
         if success:
             if not self.games[game_name].is_game_over():
