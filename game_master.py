@@ -5,6 +5,7 @@ from game import Game
 """
 Handle multiple games and players
 Figure out where to send player commands
+Should refactor so generally is player_name - game_name - other stuff
 """
 
 class GameMaster(object):
@@ -26,9 +27,11 @@ class GameMaster(object):
     def add_player(self, player_name, game_name):
         if game_name not in self.games:
             return False,  "Player not added - that game doesn't exist."
-        #if player_name in [player for game in self.games.values() for player in game.players]:
-        #    return False, "Player not added - that name already exists on the server."
         return self.games[game_name].add_player(player_name)
+
+    def get_next_player(self, game_name):
+        g = self.games[game_name]
+        return g.players.keys()[g.player_index]
             
     def move(self, game_name, r, c, player_name):
         if game_name not in self.games:
