@@ -49,3 +49,9 @@ if __name__=='__main__':
     print GM.add_player('test1', ' ')
     print GM.add_player('test1', 'y')
     print GM.add_player('test1', 'z')
+    print GM.move('test1', 0, 0, 'x')
+    print GM.move('test1', 0, 1, 'y')
+    print GM.move('test1', 0, 0, 'z')
+    print GM.move('test1', 0, 0, ' ')
+    print GM.move('test2', 0, 0, 'x')
+    #print GM.games['test1'].board
