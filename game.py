@@ -42,7 +42,7 @@ class Game(object):
         return not (win or no_moves)
 
     def score_printout(self):
-        return "\n".join([p+": "+str(s)+ for p,s in self.players.items()])
+        return "\n".join([p+": "+str(s) for p,s in self.players.items()])
         
     def move(self, r, c, player_name):
         # attempt to make a move
