@@ -63,11 +63,11 @@ class Game(object):
     def add_player(self, player_name):
         player_name = str(player_name)
         if player_name == self.board.default or player_name in self.players:
-            return False, 'Please choose another name.'
+            return False, 'Player not added - that name is in use.'
         if len(self.players) == self.num_players:
-            return False, 'This game is full.'
+            return False, 'Player not added - that game is full.'
         self.players[player_name] = 0
-        return True, 'Player added successfully'
+        return True, 'Player added successfully.'
 
     def advance_turn(self):
         self.player_index = (self.player_index+1) % self.num_players
