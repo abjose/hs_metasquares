@@ -11,9 +11,7 @@ import pprint
 
 """
 TODO:
-- Just get rid of loop-y version? Or at least rewrite with these functions...
-  Then switch this to just 'game' and switch that to game_loop or something
-- Sure it's a good idea to return error messages?'
+- Sure it's a good idea to return error messages like this?
 """
 
 class Game(object):
