@@ -4,24 +4,18 @@
 
 """
 TODO:
-- should prepend all messages with something - even warning/success messages?
-  like 'message'
-- handle messages better if prepending them with stuff, can just send lots!
-  like every one that occurs
-  or at least print them out server-side
-- make something to simulate usage? Like spawn lots of clients, get them
-  to try to connect and play...
 - MAKE HANDLE PLAYERS DISCONNECTING BETTER - LIKE SHOULD FREE UP NAME, ETC.
+- make send messages again? Figure out how to make this not screw things up.
 
 Accepted patterns:
 'init' player_name game_name rows cols num_players score_limit (make/enter game)
 'games' (list of games waiting for players)
 'move' row column (make a move)
 
-Data sent to client:
+Messages sent to client:
 'board' rows cols \n r c player \n r c player \n ... (sparse board rep)
 'games' game1 \n game2 \n ...
-various messages (not beginning with 'board')
+various messages (not beginning with 'board' or 'games')
 """
 
 from twisted.internet import reactor, protocol

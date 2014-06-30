@@ -4,6 +4,11 @@ from grid import Grid
 from utils import Point, check_square, get_squares, get_square_score, get_scores
 import pprint
 
+"""
+TODO:
+- split this code out into more functions...
+"""
+
 class Game(object):
 
     def __init__(self, r, c):

@@ -20,7 +20,7 @@ class GameMaster(object):
         if score_limit <= 0:
             return False, "Game not made - score_limit should be >= 1."
         if game_name in self.games:
-            return False, "Game not made - there is already a game with that name."
+            return False, "Game not made - that game already exists."
         if not (r > 0 and c > 0):
             return False, "Game not made - the board size is invalid."
         self.games[str(game_name)] = Game(r, c, num_players, score_limit)
