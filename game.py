@@ -12,6 +12,13 @@ import pprint
 """
 TODO:
 - Sure it's a good idea to return error messages like this?
+- make AI? need to think about how best to interface with...
+  One possible way - AI is just a class with a take_turn function
+  can be passed a list of moves and squares...
+  then uses those to make decision (return a point to move to)
+- should print scores of all players each time in a nice way
+  maybe bold scores when they change
+- add tests
 """
 
 class Game(object):

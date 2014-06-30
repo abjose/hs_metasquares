@@ -4,21 +4,6 @@ from grid import Grid
 from utils import Point, check_square, get_squares, get_square_score, get_scores
 import pprint
 
-"""
-TODO:
-- make AI? need to think about how best to interface with...
-  One possible way - AI is just a class with a take_turn function
-  can be passed a list of moves and squares...
-  then uses those to make decision (return a point to move to)
-- should print scores of all players each time in a nice way
-  maybe bold scores when they change
-- add tests
-- MAKE NETWORKED!
-- Modify to handle commands as if networked
-- need to change quite a few things...make something that can handle multiple
-  games at once, then change games so they're more event-driven
-"""
-
 class Game(object):
 
     def __init__(self, r, c):
